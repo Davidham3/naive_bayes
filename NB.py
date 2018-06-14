@@ -8,14 +8,22 @@ def readDataSet(filename, frequency = 0, training_set_ratio = 0.7, shuffle = Tru
     
     Parameters
     ----------
-    frequency: int, which means you will select the words that appeared more than the frequency you specified
+    filename: str, the filename of the data
+
+    frequency: int, you will select the words that appeared more than the frequency you specified
                 for example, if you set frequency equals 1, the program will return all words that they have 
                 appeared more than once.
+
+    training_set_ratio: float, the ratio of training data account for in all data
+    
+    shuffle: bool, whether to shuffle the data
     
     Returns
     ----------
     trainX: ndarray, the training data, the shape of it is (number of samples, number of features)
+
     trainY: ndarray, the labels of training data, the shape of it is (number of samples, )
+
     words: tuple, all words you select, each word maps the column of trainX
     '''
     with open(filename, 'r', encoding='utf-8') as f:
