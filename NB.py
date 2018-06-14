@@ -186,13 +186,17 @@ def accuracy(prediction, testY):
     '''
     return np.sum((prediction - testY) == 0) / testY.shape[0]
 
-datadir = 'SMSSpamCollection'
-train_text, train_labels, test_text, test_labels = readDataSet(datadir)
-trainX, trainY, words_table, labels_table = preprocessing_training_data(train_text, train_labels)
-print('training data shape:', trainX.shape, trainY.shape)
-testX, testY = preprocessing_testing_data(test_text, test_labels, words_table, labels_table)
-print('testing data shape:', testX.shape, testY.shape)
-a = GaussianNB()
-a.fit(trainX, trainY)
-r = a.predict(testX)
-print('accuracy:', accuracy(r, testY))
+def main():
+    datadir = 'SMSSpamCollection'
+    train_text, train_labels, test_text, test_labels = readDataSet(datadir)
+    trainX, trainY, words_table, labels_table = preprocessing_training_data(train_text, train_labels)
+    print('training data shape:', trainX.shape, trainY.shape)
+    testX, testY = preprocessing_testing_data(test_text, test_labels, words_table, labels_table)
+    print('testing data shape:', testX.shape, testY.shape)
+    a = GaussianNB()
+    a.fit(trainX, trainY)
+    r = a.predict(testX)
+    print('accuracy:', accuracy(r, testY))
+
+if __name__ == '__main__':
+    main()
