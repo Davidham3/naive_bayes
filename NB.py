@@ -8,23 +8,23 @@ def readDataSet(filename, frequency = 0, training_set_ratio = 0.7, shuffle = Tru
     
     Parameters
     ----------
-    filename: str, the filename of the data
+        filename: str, the filename of the data
 
-    frequency: int, you will select the words that appeared more than the frequency you specified
-                for example, if you set frequency equals 1, the program will return all words that they have 
-                appeared more than once.
+        frequency: int, you will select the words that appeared more than the frequency you specified
+                    for example, if you set frequency equals 1, the program will return all words that they have 
+                    appeared more than once.
 
-    training_set_ratio: float, the ratio of training data account for in all data
-    
-    shuffle: bool, whether to shuffle the data
+        training_set_ratio: float, the ratio of training data account for in all data
+        
+        shuffle: bool, whether to shuffle the data
     
     Returns
     ----------
-    trainX: ndarray, the training data, the shape of it is (number of samples, number of features)
+        trainX: ndarray, the training data, the shape of it is (number of samples, number of features)
 
-    trainY: ndarray, the labels of training data, the shape of it is (number of samples, )
+        trainY: ndarray, the labels of training data, the shape of it is (number of samples, )
 
-    words: tuple, all words you select, each word maps the column of trainX
+        words: tuple, all words you select, each word maps the column of trainX
     '''
     with open(filename, 'r', encoding='utf-8') as f:
         text = f.read().strip().split('\n')
@@ -59,19 +59,19 @@ def preprocessing_training_data(text, labels):
     
     Parameters
     ----------
-    text: lists, each element contains a list of words in a sentence
-    
-    labels: lists, each element is the label of the sample corresponding to the element in text
+        text: lists, each element contains a list of words in a sentence
+        
+        labels: lists, each element is the label of the sample corresponding to the element in text
     
     Returns
     ----------
-    trainX: ndarray, training data, the shape of it is (number of samples, number of features)
-    
-    trainY: ndarray, labels of training data, the shape of it is (number of samples, )
-    
-    words_table: dict, key is words, value is the index in bag of words
-    
-    labels_table: dict, key is the label, value is the index that represents the corresponding label
+        trainX: ndarray, training data, the shape of it is (number of samples, number of features)
+        
+        trainY: ndarray, labels of training data, the shape of it is (number of samples, )
+        
+        words_table: dict, key is words, value is the index in bag of words
+        
+        labels_table: dict, key is the label, value is the index that represents the corresponding label
     '''
     bag_of_words = tuple(set(word for words in text for word in words))
     words_table = {i: index for index, i in enumerate(bag_of_words)}
@@ -89,19 +89,19 @@ def preprocessing_testing_data(text, labels, words_table, labels_table):
     
     Parameters
     ----------
-    text: lists, each element contains a list of words in a sentence
-    
-    labels: lists, each element is the label of the sample corresponding to the element in text
-    
-    words_table: dict, key is words, value is the index in bag of words
-    
-    labels_table: dict, key is the label, value is the index that represents the corresponding label
+        text: lists, each element contains a list of words in a sentence
+        
+        labels: lists, each element is the label of the sample corresponding to the element in text
+        
+        words_table: dict, key is words, value is the index in bag of words
+        
+        labels_table: dict, key is the label, value is the index that represents the corresponding label
     
     Returns
     ----------
-    testX: ndarray, testing data, the shape of it is (number of samples, number of features)
-    
-    testY: ndarray, labels of testing data, the shape of it is (number of samples, )
+        testX: ndarray, testing data, the shape of it is (number of samples, number of features)
+        
+        testY: ndarray, labels of testing data, the shape of it is (number of samples, )
     '''
     testX = np.empty((len(text), len(words_table)))
     for index, words in enumerate(text):
@@ -136,9 +136,9 @@ class GaussianNB:
 
         Parameters
         ----------
-        trainX: ndarray, training data, the shape of it is (number of samples, number of features)
-    
-        trainY: ndarray, labels of training data, the shape of it is (number of samples, )
+            trainX: ndarray, training data, the shape of it is (number of samples, number of features)
+        
+            trainY: ndarray, labels of training data, the shape of it is (number of samples, )
         '''
         labels = set(trainY.tolist())
         for y in labels:
@@ -155,11 +155,11 @@ class GaussianNB:
 
         Parameters
         ----------
-        testX: ndarray, testing data, the shape of it is (number of samples, number of features)
+            testX: ndarray, testing data, the shape of it is (number of samples, number of features)
     
         Returns
         ----------
-        ndarray: each element is a str variable, which represent the label of corresponding testing data
+            ndarray: each element is a str variable, which represent the label of corresponding testing data
         '''
         results = np.empty((testX.shape[0], len(self.proability_of_y)))
         labels = []
@@ -176,13 +176,13 @@ def accuracy(prediction, testY):
 
     Parameters
     ----------
-    prediction: ndarray, the prediction generated by the classifier
-    
-    testY: ndarray, true labels
+        prediction: ndarray, the prediction generated by the classifier
+        
+        testY: ndarray, true labels
 
     Returns
     ----------
-    float, accuracy
+        float, accuracy
     '''
     return np.sum((prediction - testY) == 0) / testY.shape[0]
 
