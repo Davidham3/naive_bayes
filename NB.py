@@ -20,11 +20,13 @@ def readDataSet(filename, frequency = 0, training_set_ratio = 0.7, shuffle = Tru
     
     Returns
     ----------
-        trainX: ndarray, the training data, the shape of it is (number of samples, number of features)
-
-        trainY: ndarray, the labels of training data, the shape of it is (number of samples, )
-
-        words: tuple, all words you select, each word maps the column of trainX
+        train_text: list, each element contains a tuple of words that in each sentence
+        
+        train_labels: list, each element is the label of the corresponding sentence
+        
+        test_text: list
+        
+        test_labels: list
     '''
     with open(filename, 'r', encoding='utf-8') as f:
         text = f.read().strip().split('\n')
