@@ -146,10 +146,9 @@ class GaussianNB:
         for y in labels:
             x = trainX[trainY == y, :]
             self.proability_of_y[y] = x.shape[0] / trainX.shape[0]
-            self.mean[y] = x.mean(axis = 0)
-            var = x.var(axis = 0)
-            var[var == 0] += 1e-9 * var.max()
-            self.var[y] = var
+            self.mean[y] = x.mean(axis=0, keepdims=True)
+            self.var[y] = x.var(axis=0, keepdims=True) + \
+                1e-9 * np.var(trainX, axis=0).max()
         
     def predict(self, testX):
         '''
@@ -166,9 +165,9 @@ class GaussianNB:
         results = np.empty((testX.shape[0], len(self.proability_of_y)))
         labels = []
         for index, (label, py) in enumerate(self.proability_of_y.items()):
-            a = np.exp(- ((testX - self.mean[label]) ** 2) / (2 * self.var[label]) ) / np.sqrt(2 * np.pi * self.var[label])
-            a[a == 0] += 1e-9 * a.max()
-            results[:, index] = np.sum(np.log(a), axis = 1) * py
+            conditional_probability = - 0.5 * np.sum(((testX - self.mean[label]) ** 2) / self.var[label], 1)
+            conditional_probability += - 0.5 * np.sum(np.log(2 * np.pi * self.var[label]))
+            results[:, index] = conditional_probability + np.log(py)
             labels.append(label)
         return np.array(labels)[np.argmax(results, axis = 1)]
 
