@@ -127,9 +127,16 @@ class GaussianNB:
     Gaussian naive bayes for continous features
     '''
     def __init__(self):
-        self.proability_of_y = {}
+        self.label_mapping = dict()
+        self.probability_of_y = {}
         self.mean = {}
         self.var = {}
+
+    def _clear(self):
+        self.label_mapping.clear()
+        self.probability_of_y.clear()
+        self.mean.clear()
+        self.var.clear()
         
     def fit(self, trainX, trainY):
         '''
@@ -142,13 +149,14 @@ class GaussianNB:
         
             trainY: ndarray, labels of training data, the shape of it is (number of samples, )
         '''
-        labels = set(trainY.tolist())
-        for y in labels:
-            x = trainX[trainY == y, :]
-            self.proability_of_y[y] = x.shape[0] / trainX.shape[0]
-            self.mean[y] = x.mean(axis=0, keepdims=True)
-            self.var[y] = x.var(axis=0, keepdims=True) + \
-                1e-9 * np.var(trainX, axis=0).max()
+        self._clear()
+        labels = np.unique(trainY)
+        self.label_mapping = {label: index for index, label in enumerate(labels)}
+        for label in labels:
+            x = trainX[trainY == label, :]
+            self.probability_of_y[label]= x.shape[0] / trainX.shape[0]
+            self.mean[label] = x.mean(axis = 0, keepdims = True)
+            self.var[label] = x.var(axis = 0, keepdims = True) + 1e-9 * np.var(trainX, axis = 0).max()
         
     def predict(self, testX):
         '''
@@ -162,13 +170,14 @@ class GaussianNB:
         ----------
             ndarray: each element is a str variable, which represent the label of corresponding testing data
         '''
-        results = np.empty((testX.shape[0], len(self.proability_of_y)))
-        labels = []
-        for index, (label, py) in enumerate(self.proability_of_y.items()):
-            conditional_probability = - 0.5 * np.sum(((testX - self.mean[label]) ** 2) / self.var[label], 1)
-            conditional_probability += - 0.5 * np.sum(np.log(2 * np.pi * self.var[label]))
-            results[:, index] = conditional_probability + np.log(py)
-            labels.append(label)
+        results = np.empty((testX.shape[0], len(self.probability_of_y)))
+        labels = [0] * len(self.probability_of_y)
+        for label, index in self.label_mapping.items():
+            py = self.probability_of_y[label]
+            sum_of_conditional_probability = - 0.5 * np.sum(((testX - self.mean[label]) ** 2) / self.var[label], 1)
+            sum_of_conditional_probability += - 0.5 * np.sum(np.log(2 * np.pi * self.var[label]))
+            results[:, index] = sum_of_conditional_probability + np.log(py)
+            labels[index] = label
         return np.array(labels)[np.argmax(results, axis = 1)]
 
 def accuracy(prediction, testY):
